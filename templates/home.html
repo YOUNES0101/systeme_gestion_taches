@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}OrgaPro - Streamline Your Workflow{% endblock %}
+
+{% block content %}
+
+{# Hero Section - Wrike Inspired: Text on Left, Video on Right #}
+<section class="bg-light-bg py-16 md:py-24 lg:py-20" >
+    <div class="container mx-auto px-4">
+        <div class="grid lg:grid-cols-2 gap-23 xl:gap-23 items-center">
+            {# Text Content Column #}
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-neutral-text leading-tight mb-6">
+                    One Platform to <span class="text-brand-blue">Streamline</span> All Workflows
+                </h1>
+                <p class="text-lg md:text-xl text-secondary-text mb-8 max-w-xl mx-auto lg:mx-0">
+                    Experience the freedom to build, connect, automate, and scale your work with OrgaPro.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
+                    <a href="#" class="w-full sm:w-auto inline-block bg-brand-blue hover:bg-brand-blue-darker text-white font-bold py-3 px-8 rounded-lg text-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                        Try OrgaPro Free
+                    </a>
+                </div>
+            </div>
+
+            {# Video Animation Column #}
+            <div class="mt-10 lg:mt-0 ">
+                <div class="bg-white border border-border-gray rounded-xl shadow-2xl w-full p-2 md:p-3">
+                    <div class="aspect-[5/3] md:aspect-video overflow-hidden rounded-lg">
+                        <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+                            <source src="{% static 'videos/1.MP4' %}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# MODIFIED Features Section - Based on your provided structure, adapted to light theme with BLUE accent #}
+<section class="py-16 md:py-24 bg-off-white-bg" id="features">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-neutral-text mb-4">Key Features Designed for Efficiency</h2>
+            <p class="text-xl text-secondary-text max-w-2xl mx-auto">Tools designed to streamline your workflow and boost productivity.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+            {# Feature Card 1: Task Management #}
+            <div class="bg-light-bg p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out border border-border-gray group text-center">
+                <div class="text-5xl text-brand-blue mb-4 transition-transform duration-300 group-hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-semibold text-neutral-text mb-3">Task Management</h3>
+                <p class="text-secondary-text leading-relaxed">Easily create, assign, and track tasks. Stay organized and never miss a deadline with our intuitive task board.</p>
+            </div>
+
+            {# Feature Card 2: Project Tracking #}
+            <div class="bg-light-bg p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out border border-border-gray group text-center">
+                 <div class="text-5xl text-brand-blue mb-4 transition-transform duration-300 group-hover:scale-110">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                 </div>
+                <h3 class="text-2xl font-semibold text-neutral-text mb-3">Project Tracking</h3>
+                <p class="text-secondary-text leading-relaxed">Monitor project progress with customizable views, reports, and dashboards. Keep everyone aligned and informed.</p>
+            </div>
+
+            {# Feature Card 3: Team Collaboration #}
+            <div class="bg-light-bg p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out border border-border-gray group text-center">
+                 <div class="text-5xl text-brand-blue mb-4 transition-transform duration-300 group-hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                 </div>
+                <h3 class="text-2xl font-semibold text-neutral-text mb-3">Team Collaboration</h3>
+                <p class="text-secondary-text leading-relaxed">Facilitate seamless communication and collaboration among team members. Share files, comment, and discuss directly.</p>
+            </div>
+
+             {# Feature Card 4: Notifications #}
+             <div class="bg-light-bg p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out border border-border-gray group text-center">
+                  <div class="text-5xl text-brand-blue mb-4 transition-transform duration-300 group-hover:scale-110">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.405L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9" />
+                        </svg>
+                  </div>
+                 <h3 class="text-2xl font-semibold text-neutral-text mb-3">Smart Notifications</h3>
+                 <p class="text-secondary-text leading-relaxed">Receive timely alerts and reminders directly within the platform and via email, ensuring you never miss an update.</p>
+             </div>
+
+             {# Feature Card 5: File Sharing #}
+              <div class="bg-light-bg p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out border border-border-gray group text-center">
+                  <div class="text-5xl text-brand-blue mb-4 transition-transform duration-300 group-hover:scale-110">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M8 13v-1m4 1v-3m4 3V8m0 5a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M12 17l-.01-.01M12 17a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M8 17l-.01.01M8 17a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M12 7a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M16 17a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M16 7a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M12 12a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01M8 7a2 2 0 11-4 0 2 2 0 014 0zm0 0l.01.01" />
+                        </svg>
+                  </div>
+                 <h3 class="text-2xl font-semibold text-neutral-text mb-3">Secure File Sharing</h3>
+                 <p class="text-secondary-text leading-relaxed">Securely share documents, images, and other files directly within tasks and projects for easy access and collaboration.</p>
+             </div>
+
+              {# Feature Card 6: Reporting #}
+              <div class="bg-light-bg p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out border border-border-gray group text-center">
+                  <div class="text-5xl text-brand-blue mb-4 transition-transform duration-300 group-hover:scale-110">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                  </div>
+                 <h3 class="text-2xl font-semibold text-neutral-text mb-3">Analytics & Reporting</h3>
+                 <p class="text-secondary-text leading-relaxed">Gain insights into your team's performance and project status with customizable reports and analytics dashboards.</p>
+             </div>
+        </div>
+    </div>
+</section>
+
+{# About Section - Simplified for Wrike style #}
+<section class="py-16 md:py-24 bg-light-bg" id="about">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-neutral-text mb-6">Empowering Teams Worldwide</h2>
+            <p class="text-lg text-secondary-text leading-relaxed">
+                OrgaPro is dedicated to providing robust and user-friendly project management solutions that help teams collaborate more effectively and achieve their goals faster.
+            </p>
+        </div>
+    </div>
+</section>
+
+{# Call to Action Section - Wrike-like, clean and direct #}
+<section class="py-16 md:py-24 bg-off-white-bg">
+     <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-neutral-text mb-6">Ready to Boost Your Team's Productivity?</h2>
+        <p class="text-xl text-secondary-text mb-8 max-w-2xl mx-auto">Join thousands of companies transforming their work with OrgaPro.</p>
+        <a href="#" class="inline-block bg-brand-blue hover:bg-brand-blue-darker text-white font-bold py-3 px-10 rounded-lg text-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+            Start Your Free Trial Today
+        </a>
+     </div>
+</section>
+
+{# Footer - Light theme #}
+<footer class="py-12 bg-gray-100 border-t border-border-gray" id="footer">
+    <div class="container mx-auto px-4 text-center">
+        <div class="mb-6">
+            <a href="/" class="text-xl font-bold text-brand-blue hover:text-brand-blue-darker transition-colors duration-200">OrgaPro</a>
+        </div>
+        <div class="mb-6 text-sm flex justify-center flex-wrap gap-x-6 gap-y-2">
+            <a href="#features" class="text-secondary-text hover:text-brand-blue transition-colors duration-200">Features</a>
+            <a href="#about" class="text-secondary-text hover:text-brand-blue transition-colors duration-200">About Us</a>
+            <a href="#" class="text-secondary-text hover:text-brand-blue transition-colors duration-200">Pricing</a>
+            <a href="#" class="text-secondary-text hover:text-brand-blue transition-colors duration-200">Terms of Service</a>
+            <a href="#" class="text-secondary-text hover:text-brand-blue transition-colors duration-200">Privacy Policy</a>
+        </div>
+        <p class="text-sm text-gray-500">© 2025 OrgaPro. All rights reserved.</p>
+    </div>
+</footer>
+
+{% endblock %}
+
+{% block scripts %}
+{# No specific scripts needed for just the WebM video playback with autoplay/loop/muted attributes #}
+{% endblock %}

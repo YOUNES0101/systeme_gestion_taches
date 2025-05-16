@@ -1,0 +1,86 @@
+<nav class="bg-light-bg shadow-sm sticky top-0 z-50 border-b border-border-gray">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            {# Logo/Brand #}
+            <div class="flex items-center">
+                <a href="/" class="text-2xl font-extrabold text-brand-blue hover:text-brand-blue-darker transition-colors duration-200">
+                    OrgaPro
+                </a>
+            </div>
+
+            {# Desktop Navigation Links #}
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-6">
+                    {% if user.is_authenticated %}
+                        <a href="#" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
+                        <a href="#" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Projects</a>
+                        <a href="#" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Tasks</a>
+                    {% else %}
+                         <a href="#features" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Features</a>
+                         <a href="#about" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">About Us</a>
+                         <a href="#" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Pricing</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Desktop Auth Buttons #}
+            <div class="hidden md:block">
+                <div class="ml-4 flex items-center md:ml-6 space-x-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-neutral-text text-sm">Welcome, <span class="font-semibold">{{ user.username|default:'User' }}</span></span>
+                        <a href="#" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">Logout</a>
+                    {% else %}
+                        <a href="#" class="text-neutral-text hover:text-brand-blue text-sm font-medium transition-colors duration-200">Log In</a>
+                        <a href="#" class="bg-brand-blue hover:bg-brand-blue-darker text-white px-4 py-2 rounded-md text-sm font-bold transition-colors duration-200">Try for Free</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Mobile menu button #}
+            <div class="-mr-2 flex md:hidden">
+                <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-secondary-text hover:text-neutral-text hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-blue" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# Mobile menu, show/hide based on menu state. #}
+    <div class="md:hidden hidden bg-light-bg border-t border-border-gray" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {% if user.is_authenticated %}
+                <a href="#" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Dashboard</a>
+                <a href="#" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Projects</a>
+                <a href="#" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Tasks</a>
+            {% else %}
+                 <a href="#features" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Features</a>
+                 <a href="#about" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">About Us</a>
+                 <a href="#" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Pricing</a>
+            {% endif %}
+        </div>
+        <div class="pt-4 pb-3 border-t border-border-gray">
+            {% if user.is_authenticated %}
+                <div class="flex items-center px-5">
+                    <div class="ml-3">
+                        <div class="text-base font-medium text-neutral-text">{{ user.username|default:'User' }}</div>
+                        {% if user.email %}<div class="text-sm font-medium text-secondary-text">{{ user.email }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="mt-3 px-2 space-y-1">
+                    <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-neutral-text hover:bg-gray-100 hover:text-brand-blue transition-colors duration-200">Logout</a>
+                </div>
+            {% else %}
+                <div class="px-2 space-y-1">
+                    <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-neutral-text hover:bg-gray-100 hover:text-brand-blue transition-colors duration-200">Log In</a>
+                    <a href="#" class="block px-3 py-2 rounded-md text-base font-medium bg-brand-blue text-white hover:bg-brand-blue-darker transition-colors duration-200">Try for Free</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

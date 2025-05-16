@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OrgaPro{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> {# Your custom CSS if any #}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+
+              'brand-blue': '#2563EB', // Tailwind blue-600
+              'brand-blue-darker': '#1D4ED8', // Tailwind blue-700
+              'neutral-text': '#2D3748', // Dark gray for text
+              'secondary-text': '#4A5568',
+              'light-bg': '#FFFFFF',
+              'off-white-bg': '#F7FAFC',
+              'border-gray': '#E2E8F0',
+            },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
+
+    <style>
+      .gap-23 {
+        gap: 1rem;
+      }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: tailwind.config.theme.extend.colors['neutral-text'];
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+
+</head>
+<body class="bg-light-bg antialiased overflow-x-hidden">
+
+    {% include 'navbar.html' %}
+
+    {# Main content area, no overall container here, sections will manage their width/padding #}
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {# Main global script (e.g., for mobile menu) #}
+    <script src="{% static 'js/script.js' %}"></script>
+
+    {# Block for page-specific JavaScript files or inline scripts #}
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+</html>
