@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modifier la tâche | OrgaPro{% endblock %}
+
+{% block content %}
+<div class="bg-off-white-bg py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Fil d'Ariane -->
+        <div class="mb-6">
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{% url 'task_list' %}" class="text-secondary-text hover:text-brand-blue">
+                            Tâches
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                            </svg>
+                            <a href="{% url 'task_detail' tache.id %}" class="text-secondary-text hover:text-brand-blue ml-1 md:ml-2">
+                                {{ tache.titre }}
+                            </a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                            </svg>
+                            <span class="text-neutral-text ml-1 md:ml-2">Modifier</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Formulaire de modification de tâche -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold text-neutral-text mb-6">Modifier la tâche</h1>
+            
+            <form method="post" action="{% url 'edit_task' tache.id %}">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Titre -->
+                    <div class="md:col-span-2">
+                        <label for="titre" class="block text-sm font-medium text-neutral-text mb-1">Titre <span class="text-red-500">*</span></label>
+                        <input type="text" name="titre" id="titre" value="{{ tache.titre }}" required class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-neutral-text mb-1">Description</label>
+                        <textarea name="description" id="description" rows="4" class="w-full border border-gray-300 rounded-md p-2">{{ tache.description }}</textarea>
+                    </div>
+                    
+                    <!-- Statut -->
+                    <div>
+                        <label for="statut" class="block text-sm font-medium text-neutral-text mb-1">Statut <span class="text-red-500">*</span></label>
+                        <select name="statut" id="statut" required class="w-full border border-gray-300 rounded-md p-2">
+                            {% for value, label in tache.STATUT_CHOICES %}
+                                <option value="{{ value }}" {% if tache.statut == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Priorité -->
+                    <div>
+                        <label for="priorite" class="block text-sm font-medium text-neutral-text mb-1">Priorité <span class="text-red-500">*</span></label>
+                        <select name="priorite" id="priorite" required class="w-full border border-gray-300 rounded-md p-2">
+                            {% for value, label in tache.PRIORITE_CHOICES %}
+                                <option value="{{ value }}" {% if tache.priorite == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Date d'échéance -->
+                    <div>
+                        <label for="date_echeance" class="block text-sm font-medium text-neutral-text mb-1">Date d'échéance</label>
+                        <input type="date" name="date_echeance" id="date_echeance" value="{{ tache.date_echeance|date:'Y-m-d' }}" class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    
+                    <!-- Assigné à -->
+                    <div>
+                        <label for="assignee" class="block text-sm font-medium text-neutral-text mb-1">Assigné à</label>
+                        <select name="assignee" id="assignee" class="w-full border border-gray-300 rounded-md p-2">
+                            <option value="">Non assigné</option>
+                            {% for membre in membres_projet %}
+                                <option value="{{ membre.id }}" {% if tache.assignee == membre %}selected{% endif %}>{{ membre.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Temps estimé -->
+                    <div>
+                        <label for="temps_estime" class="block text-sm font-medium text-neutral-text mb-1">Temps estimé (heures)</label>
+                        <input type="number" name="temps_estime" id="temps_estime" value="{{ tache.temps_estime }}" min="0" class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    
+                    <!-- Temps passé -->
+                    <div>
+                        <label for="temps_passe" class="block text-sm font-medium text-neutral-text mb-1">Temps passé (heures)</label>
+                        <input type="number" name="temps_passe" id="temps_passe" value="{{ tache.temps_passe }}" min="0" class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-end space-x-4">
+                    <a href="{% url 'task_detail' tache.id %}" class="btn-secondary">
+                        Annuler
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

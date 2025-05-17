@@ -14,7 +14,7 @@
                     {% if user.is_authenticated %}
                         <a href="#" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
                         <a href="{% url 'project_list' %}" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Projects</a>
-                        <a href="#" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Tasks</a>
+                        <a href="{% url 'task_list' %}" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Tasks</a>
                     {% else %}
                          <a href="{% url 'home' %}#features" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Features</a>
                          <a href="{% url 'home' %}#about" class="text-neutral-text hover:text-brand-blue px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">About Us</a>
@@ -59,7 +59,7 @@
             {% if user.is_authenticated %}
                 <a href="#" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Dashboard</a>
                 <a href="{% url 'project_list' %}" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Projects</a>
-                <a href="#" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Tasks</a>
+                <a href="{% url 'task_list' %}" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Tasks</a>
             {% else %}
                  <a href="{% url 'home' %}#features" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Features</a>
                  <a href="{% url 'home' %}#about" class="text-neutral-text hover:bg-gray-100 hover:text-brand-blue block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">About Us</a>

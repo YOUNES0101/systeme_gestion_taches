@@ -37,8 +37,14 @@ class Tache(models.Model):
     temps_estime = models.PositiveIntegerField(null=True, blank=True, verbose_name='Temps estimé (heures)')
     temps_passe = models.PositiveIntegerField(null=True, blank=True, verbose_name='Temps passé (heures)')
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.titre} ({self.projet.nom})"
+
+    def get_temps_difference(self):
+        """Calcule la différence entre le temps estimé et le temps passé"""
+        temps_estime = self.temps_estime or 0
+        temps_passe = self.temps_passe or 0
+        return abs(temps_estime - temps_passe)
 
     class Meta:
         verbose_name = 'Tâche'
