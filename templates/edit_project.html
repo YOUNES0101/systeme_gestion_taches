@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modifier {{ projet.nom }} | OrgaPro{% endblock %}
+
+{% block content %}
+<div class="bg-off-white-bg py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center mb-6">
+                <a href="{% url 'project_detail' projet.id %}" class="text-brand-blue hover:text-brand-blue-darker mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <h1 class="text-2xl font-bold text-neutral-text">Modifier le projet</h1>
+            </div>
+
+            <form method="post" action="{% url 'edit_project' projet.id %}">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="md:col-span-2">
+                        <label for="nom" class="block text-sm font-medium text-secondary-text mb-1">Nom du projet*</label>
+                        <input type="text" id="nom" name="nom" value="{{ projet.nom }}" required 
+                               class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-secondary-text mb-1">Description</label>
+                        <textarea id="description" name="description" rows="4" 
+                                  class="w-full border border-gray-300 rounded-md p-2">{{ projet.description }}</textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="date_debut" class="block text-sm font-medium text-secondary-text mb-1">Date de début*</label>
+                        <input type="date" id="date_debut" name="date_debut" value="{{ projet.date_debut|date:'Y-m-d' }}" required 
+                               class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    
+                    <div>
+                        <label for="date_fin" class="block text-sm font-medium text-secondary-text mb-1">Date de fin (optionnelle)</label>
+                        <input type="date" id="date_fin" name="date_fin" value="{% if projet.date_fin %}{{ projet.date_fin|date:'Y-m-d' }}{% endif %}" 
+                               class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    
+                    <div>
+                        <label for="statut" class="block text-sm font-medium text-secondary-text mb-1">Statut</label>
+                        <select id="statut" name="statut" 
+                                class="w-full border border-gray-300 rounded-md p-2">
+                            <option value="en_attente" {% if projet.statut == 'en_attente' %}selected{% endif %}>En attente</option>
+                            <option value="en_cours" {% if projet.statut == 'en_cours' %}selected{% endif %}>En cours</option>
+                            <option value="termine" {% if projet.statut == 'termine' %}selected{% endif %}>Terminé</option>
+                            <option value="annule" {% if projet.statut == 'annule' %}selected{% endif %}>Annulé</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="priorite" class="block text-sm font-medium text-secondary-text mb-1">Priorité</label>
+                        <select id="priorite" name="priorite" 
+                                class="w-full border border-gray-300 rounded-md p-2">
+                            <option value="basse" {% if projet.priorite == 'basse' %}selected{% endif %}>Basse</option>
+                            <option value="moyenne" {% if projet.priorite == 'moyenne' %}selected{% endif %}>Moyenne</option>
+                            <option value="haute" {% if projet.priorite == 'haute' %}selected{% endif %}>Haute</option>
+                            <option value="urgente" {% if projet.priorite == 'urgente' %}selected{% endif %}>Urgente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-secondary-text mb-2">Membres du projet</label>
+                        <div class="border border-gray-300 rounded-md p-4 max-h-60 overflow-y-auto">
+                            {% if users %}
+                                {% for user in users %}
+                                <div class="flex items-center mb-2 last:mb-0">
+                                    <input type="checkbox" id="membre_{{ user.id }}" name="membres" value="{{ user.id }}" 
+                                           {% if user.id in membres_actuels %}checked{% endif %}
+                                           class="mr-2 h-4 w-4 text-brand-blue focus:ring-brand-blue">
+                                    <label for="membre_{{ user.id }}" class="text-secondary-text">
+                                        {{ user.username }}
+                                        {% if user.first_name or user.last_name %}
+                                            ({{ user.first_name }} {{ user.last_name }})
+                                        {% endif %}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-secondary-text text-sm italic">Aucun utilisateur disponible</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <a href="{% url 'project_detail' projet.id %}" class="px-4 py-2 border border-gray-300 rounded-md text-secondary-text hover:bg-gray-50">
+                        Annuler
+                    </a>
+                    <button type="submit" class="px-4 py-2 bg-brand-blue text-white rounded-md hover:bg-brand-blue-darker">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
