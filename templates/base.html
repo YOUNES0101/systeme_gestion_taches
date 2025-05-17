@@ -55,10 +55,11 @@
 
 </head>
 <body class="bg-light-bg antialiased overflow-x-hidden">
+<!-- if the page is the signup page do not include the navbar -->
+{% if not request.path == '/signup/' %}
+ {% include 'navbar.html' %}
+{% endif %}
 
-    {% include 'navbar.html' %}
-
-    {# Main content area, no overall container here, sections will manage their width/padding #}
     <main>
         {% block content %}
         {% endblock %}
@@ -66,6 +67,7 @@
 
     {# Main global script (e.g., for mobile menu) #}
     <script src="{% static 'js/script.js' %}"></script>
+
 
     {# Block for page-specific JavaScript files or inline scripts #}
     {% block scripts %}
