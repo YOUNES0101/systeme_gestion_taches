@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ projet.nom }} | OrgaPro{% endblock %}
+
+{% block content %}
+<div class="bg-off-white-bg py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- En-tête du projet -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <h1 class="text-2xl font-bold text-neutral-text">{{ projet.nom }}</h1>
+                        <span class="ml-3 px-3 py-1 text-sm rounded-full 
+                            {% if projet.statut == 'en_attente' %}bg-yellow-100 text-yellow-800
+                            {% elif projet.statut == 'en_cours' %}bg-blue-100 text-blue-800
+                            {% elif projet.statut == 'termine' %}bg-green-100 text-green-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ projet.get_statut_display }}
+                        </span>
+                        <span class="ml-2 px-3 py-1 text-sm rounded-full 
+                            {% if projet.priorite == 'basse' %}bg-gray-100 text-gray-800
+                            {% elif projet.priorite == 'moyenne' %}bg-blue-100 text-blue-800
+                            {% elif projet.priorite == 'haute' %}bg-orange-100 text-orange-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            Priorité: {{ projet.get_priorite_display }}
+                        </span>
+                    </div>
+                    <p class="text-secondary-text mb-4">{{ projet.description }}</p>
+                    <div class="flex flex-wrap gap-4 text-sm text-secondary-text">
+                        <div>
+                            <span class="font-medium">Date de début:</span> 
+                            {{ projet.date_debut|date:"d/m/Y" }}
+                        </div>
+                        {% if projet.date_fin %}
+                        <div>
+                            <span class="font-medium">Date de fin:</span> 
+                            {{ projet.date_fin|date:"d/m/Y" }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <span class="font-medium">Chef de projet:</span> 
+                            {{ projet.chef_de_projet.username }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+                    <a href="{% url 'edit_project' projet.id %}" class="btn-primary">
+                        Modifier le projet
+                    </a>
+                    <button id="addTaskBtn" class="btn-secondary">
+                        Ajouter une tâche
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques du projet -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-medium text-secondary-text mb-2">Tâches totales</h3>
+                <p class="text-3xl font-bold text-brand-blue">{{ projet.taches.count }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-medium text-secondary-text mb-2">En cours</h3>
+                <p class="text-3xl font-bold text-blue-500">{{ taches_en_cours }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-medium text-secondary-text mb-2">Terminées</h3>
+                <p class="text-3xl font-bold text-green-500">{{ taches_terminees }}</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-medium text-secondary-text mb-2">En retard</h3>
+                <p class="text-3xl font-bold text-red-500">{{ taches_en_retard }}</p>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Membres du projet -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-neutral-text">Membres du projet</h2>
+                        <button class="text-brand-blue hover:text-brand-blue-darker">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        <!-- Chef de projet -->
+                        <div class="flex items-center p-2 bg-blue-50 rounded-lg">
+                            <div class="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center text-white font-bold">
+                                {{ projet.chef_de_projet.username|slice:":1"|upper }}
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-medium">{{ projet.chef_de_projet.username }}</p>
+                                <p class="text-sm text-secondary-text">Chef de projet</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Membres -->
+                        {% for membre in projet.membres.all %}
+                        <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg">
+                            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">
+                                {{ membre.username|slice:":1"|upper }}
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-medium">{{ membre.username }}</p>
+                                <p class="text-sm text-secondary-text">Membre</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-sm text-secondary-text italic">Aucun membre ajouté au projet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des tâches -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-neutral-text">Tâches</h2>
+                        <div class="flex gap-2">
+                            <select id="filterStatus" class="border border-gray-300 rounded-md text-sm p-2">
+                                <option value="all">Tous les statuts</option>
+                                <option value="a_faire">À faire</option>
+                                <option value="en_cours">En cours</option>
+                                <option value="terminee">Terminée</option>
+                                <option value="en_retard">En retard</option>
+                            </select>
+                            <select id="filterPriority" class="border border-gray-300 rounded-md text-sm p-2">
+                                <option value="all">Toutes les priorités</option>
+                                <option value="basse">Basse</option>
+                                <option value="moyenne">Moyenne</option>
+                                <option value="haute">Haute</option>
+                                <option value="critique">Critique</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Liste des tâches -->
+                    <div class="space-y-4">
+                        {% for tache in projet.taches.all %}
+                        <div class="task-card border rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between">
+                                <div>
+                                    <h3 class="font-medium text-lg">{{ tache.titre }}</h3>
+                                    <p class="text-sm text-secondary-text mb-2">{{ tache.description|truncatechars:100 }}</p>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="px-2 py-1 text-xs rounded-full mb-2
+                                        {% if tache.statut == 'a_faire' %}bg-gray-100 text-gray-800
+                                        {% elif tache.statut == 'en_cours' %}bg-blue-100 text-blue-800
+                                        {% elif tache.statut == 'terminee' %}bg-green-100 text-green-800
+                                        {% else %}bg-red-100 text-red-800{% endif %}">
+                                        {{ tache.get_statut_display }}
+                                    </span>
+                                    <span class="px-2 py-1 text-xs rounded-full
+                                        {% if tache.priorite == 'basse' %}bg-gray-100 text-gray-800
+                                        {% elif tache.priorite == 'moyenne' %}bg-blue-100 text-blue-800
+                                        {% elif tache.priorite == 'haute' %}bg-orange-100 text-orange-800
+                                        {% else %}bg-red-100 text-red-800{% endif %}">
+                                        {{ tache.get_priorite_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex flex-wrap gap-4 text-sm">
+                                {% if tache.assignee %}
+                                <div class="flex items-center">
+                                    <span class="font-medium mr-1">Assigné à:</span>
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 bg-brand-blue rounded-full flex items-center justify-center text-white text-xs font-bold mr-1">
+                                            {{ tache.assignee.username|slice:":1"|upper }}
+                                        </div>
+                                        {{ tache.assignee.username }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if tache.date_echeance %}
+                                <div>
+                                    <span class="font-medium">Échéance:</span> 
+                                    {{ tache.date_echeance|date:"d/m/Y" }}
+                                </div>
+                                {% endif %}
+                                {% if tache.temps_estime %}
+                                <div>
+                                    <span class="font-medium">Temps estimé:</span> 
+                                    {{ tache.temps_estime }}h
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="mt-3 flex justify-end gap-2">
+                                <a href="{% url 'task_detail' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                                    Voir détails
+                                </a>
+                                <a href="{% url 'edit_task' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                                    Modifier
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-8">
+                            <p class="text-secondary-text mb-4">Aucune tâche n'a encore été créée pour ce projet</p>
+                            <button id="emptyAddTaskBtn" class="btn-primary">
+                                Ajouter une première tâche
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'ajout de tâche -->
+<div id="taskModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-neutral-text">Ajouter une nouvelle tâche</h2>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form method="post" action="{% url 'add_task' projet.id %}">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="md:col-span-2">
+                    <label for="titre" class="block text-sm font-medium text-secondary-text mb-1">Titre</label>
+                    <input type="text" id="titre" name="titre" required 
+                           class="w-full border border-gray-300 rounded-md p-2">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="description" class="block text-sm font-medium text-secondary-text mb-1">Description</label>
+                    <textarea id="description" name="description" rows="3" 
+                              class="w-full border border-gray-300 rounded-md p-2"></textarea>
+                </div>
+                <div>
+                    <label for="priorite" class="block text-sm font-medium text-secondary-text mb-1">Priorité</label>
+                    <select id="priorite" name="priorite" 
+                            class="w-full border border-gray-300 rounded-md p-2">
+                        <option value="basse">Basse</option>
+                        <option value="moyenne" selected>Moyenne</option>
+                        <option value="haute">Haute</option>
+                        <option value="critique">Critique</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="statut" class="block text-sm font-medium text-secondary-text mb-1">Statut</label>
+                    <select id="statut" name="statut" 
+                            class="w-full border border-gray-300 rounded-md p-2">
+                        <option value="a_faire" selected>À faire</option>
+                        <option value="en_cours">En cours</option>
+                        <option value="terminee">Terminée</option>
+                        <option value="en_retard">En retard</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="assignee" class="block text-sm font-medium text-secondary-text mb-1">Assigné à</label>
+                    <select id="assignee" name="assignee" 
+                            class="w-full border border-gray-300 rounded-md p-2">
+                        <option value="">Non assigné</option>
+                        <option value="{{ projet.chef_de_projet.id }}">{{ projet.chef_de_projet.username }} (Chef)</option>
+                        {% for membre in projet.membres.all %}
+                        <option value="{{ membre.id }}">{{ membre.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="date_echeance" class="block text-sm font-medium text-secondary-text mb-1">Date d'échéance</label>
+                    <input type="date" id="date_echeance" name="date_echeance" 
+                           class="w-full border border-gray-300 rounded-md p-2">
+                </div>
+                <div>
+                    <label for="temps_estime" class="block text-sm font-medium text-secondary-text mb-1">Temps estimé (heures)</label>
+                    <input type="number" id="temps_estime" name="temps_estime" min="0" 
+                           class="w-full border border-gray-300 rounded-md p-2">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" id="cancelBtn" class="px-4 py-2 border border-gray-300 rounded-md text-secondary-text hover:bg-gray-50">
+                    Annuler
+                </button>
+                <button type="submit" class="px-4 py-2 bg-brand-blue text-white rounded-md hover:bg-brand-blue-darker">
+                    Ajouter la tâche
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Gestion du modal d'ajout de tâche
+    const modal = document.getElementById('taskModal');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const emptyAddTaskBtn = document.getElementById('emptyAddTaskBtn');
+    const closeModal = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    function openModal() {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalFunc() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    if (addTaskBtn) addTaskBtn.addEventListener('click', openModal);
+    if (emptyAddTaskBtn) emptyAddTaskBtn.addEventListener('click', openModal);
+    if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModalFunc);
+
+    // Filtrage des tâches
+    const filterStatus = document.getElementById('filterStatus');
+    const filterPriority = document.getElementById('filterPriority');
+    const taskCards = document.querySelectorAll('.task-card');
+
+    function filterTasks() {
+        const statusValue = filterStatus.value;
+        const priorityValue = filterPriority.value;
+
+        taskCards.forEach(card => {
+            const statusElement = card.querySelector('[class*="bg-"][class*="text-"]');
+            const priorityElement = card.querySelectorAll('[class*="bg-"][class*="text-"]')[1];
+            
+            const statusText = statusElement.textContent.trim().toLowerCase();
+            const priorityText = priorityElement.textContent.trim().toLowerCase();
+            
+            const statusMatch = statusValue === 'all' || statusText.includes(statusValue);
+            const priorityMatch = priorityValue === 'all' || priorityText.includes(priorityValue);
+            
+            if (statusMatch && priorityMatch) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    if (filterStatus) filterStatus.addEventListener('change', filterTasks);
+    if (filterPriority) filterPriority.addEventListener('change', filterTasks);
+</script>
+{% endblock %}
