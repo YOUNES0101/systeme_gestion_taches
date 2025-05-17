@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mes Tâches | OrgaPro{% endblock %}
+
+{% block content %}
+<div class="bg-off-white-bg py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- En-tête de la page -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-neutral-text">Mes Tâches</h1>
+            <p class="text-secondary-text mt-2">Gérez et suivez toutes vos tâches</p>
+        </div>
+
+        <!-- Filtres et recherche -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex-grow">
+                    <input type="text" id="searchTasks" placeholder="Rechercher une tâche..." class="w-full border border-gray-300 rounded-md p-2 text-sm">
+                </div>
+                <div class="flex gap-2">
+                    <select id="filterStatus" class="border border-gray-300 rounded-md text-sm p-2">
+                        <option value="all">Tous les statuts</option>
+                        <option value="a_faire">À faire</option>
+                        <option value="en_cours">En cours</option>
+                        <option value="terminee">Terminée</option>
+                        <option value="en_retard">En retard</option>
+                    </select>
+                    <select id="filterPriority" class="border border-gray-300 rounded-md text-sm p-2">
+                        <option value="all">Toutes les priorités</option>
+                        <option value="basse">Basse</option>
+                        <option value="moyenne">Moyenne</option>
+                        <option value="haute">Haute</option>
+                        <option value="critique">Critique</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tâches assignées à l'utilisateur -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold text-neutral-text mb-4">Tâches qui me sont assignées</h2>
+            
+            <div class="space-y-4">
+                {% for tache in taches_assignees %}
+                <div class="task-card border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between">
+                        <div>
+                            <h3 class="font-medium text-lg">{{ tache.titre }}</h3>
+                            <p class="text-sm text-secondary-text mb-2">{{ tache.description|truncatechars:100 }}</p>
+                            <p class="text-xs text-secondary-text">Projet: <a href="{% url 'project_detail' tache.projet.id %}" class="text-brand-blue hover:underline">{{ tache.projet.nom }}</a></p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="px-2 py-1 text-xs rounded-full mb-2
+                                {% if tache.statut == 'a_faire' %}bg-gray-100 text-gray-800
+                                {% elif tache.statut == 'en_cours' %}bg-blue-100 text-blue-800
+                                {% elif tache.statut == 'terminee' %}bg-green-100 text-green-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ tache.get_statut_display }}
+                            </span>
+                            <span class="px-2 py-1 text-xs rounded-full
+                                {% if tache.priorite == 'basse' %}bg-gray-100 text-gray-800
+                                {% elif tache.priorite == 'moyenne' %}bg-blue-100 text-blue-800
+                                {% elif tache.priorite == 'haute' %}bg-orange-100 text-orange-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ tache.get_priorite_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-4 text-sm">
+                        {% if tache.date_echeance %}
+                        <div>
+                            <span class="font-medium">Échéance:</span> 
+                            {{ tache.date_echeance|date:"d/m/Y" }}
+                        </div>
+                        {% endif %}
+                        {% if tache.temps_estime %}
+                        <div>
+                            <span class="font-medium">Temps estimé:</span> 
+                            {{ tache.temps_estime }}h
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3 flex justify-end gap-2">
+                        <a href="{% url 'task_detail' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                            Voir détails
+                        </a>
+                        <a href="{% url 'edit_task' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                            Modifier
+                        </a>
+                        <form method="post" action="{% url 'update_task_status' tache.id %}" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="statut" value="terminee">
+                            <button type="submit" class="text-sm text-green-600 hover:text-green-800">
+                                Marquer terminée
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-8">
+                    <p class="text-secondary-text">Aucune tâche ne vous est assignée pour le moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Tâches des projets dirigés -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-bold text-neutral-text mb-4">Tâches de mes projets dirigés</h2>
+            
+            <div class="space-y-4">
+                {% for tache in taches_projets_diriges %}
+                <div class="task-card border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between">
+                        <div>
+                            <h3 class="font-medium text-lg">{{ tache.titre }}</h3>
+                            <p class="text-sm text-secondary-text mb-2">{{ tache.description|truncatechars:100 }}</p>
+                            <p class="text-xs text-secondary-text">Projet: <a href="{% url 'project_detail' tache.projet.id %}" class="text-brand-blue hover:underline">{{ tache.projet.nom }}</a></p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="px-2 py-1 text-xs rounded-full mb-2
+                                {% if tache.statut == 'a_faire' %}bg-gray-100 text-gray-800
+                                {% elif tache.statut == 'en_cours' %}bg-blue-100 text-blue-800
+                                {% elif tache.statut == 'terminee' %}bg-green-100 text-green-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ tache.get_statut_display }}
+                            </span>
+                            <span class="px-2 py-1 text-xs rounded-full
+                                {% if tache.priorite == 'basse' %}bg-gray-100 text-gray-800
+                                {% elif tache.priorite == 'moyenne' %}bg-blue-100 text-blue-800
+                                {% elif tache.priorite == 'haute' %}bg-orange-100 text-orange-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ tache.get_priorite_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-4 text-sm">
+                        {% if tache.assignee %}
+                        <div class="flex items-center">
+                            <span class="font-medium mr-1">Assigné à:</span>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 bg-brand-blue rounded-full flex items-center justify-center text-white text-xs font-bold mr-1">
+                                    {{ tache.assignee.username|slice:":1"|upper }}
+                                </div>
+                                {{ tache.assignee.username }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if tache.date_echeance %}
+                        <div>
+                            <span class="font-medium">Échéance:</span> 
+                            {{ tache.date_echeance|date:"d/m/Y" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3 flex justify-end gap-2">
+                        <a href="{% url 'task_detail' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                            Voir détails
+                        </a>
+                        <a href="{% url 'edit_task' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                            Modifier
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-8">
+                    <p class="text-secondary-text">Aucune tâche dans vos projets dirigés pour le moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Tâches des projets participés -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold text-neutral-text mb-4">Tâches des projets auxquels je participe</h2>
+            
+            <div class="space-y-4">
+                {% for tache in taches_projets_participes %}
+                <div class="task-card border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between">
+                        <div>
+                            <h3 class="font-medium text-lg">{{ tache.titre }}</h3>
+                            <p class="text-sm text-secondary-text mb-2">{{ tache.description|truncatechars:100 }}</p>
+                            <p class="text-xs text-secondary-text">Projet: <a href="{% url 'project_detail' tache.projet.id %}" class="text-brand-blue hover:underline">{{ tache.projet.nom }}</a></p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="px-2 py-1 text-xs rounded-full mb-2
+                                {% if tache.statut == 'a_faire' %}bg-gray-100 text-gray-800
+                                {% elif tache.statut == 'en_cours' %}bg-blue-100 text-blue-800
+                                {% elif tache.statut == 'terminee' %}bg-green-100 text-green-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ tache.get_statut_display }}
+                            </span>
+                            <span class="px-2 py-1 text-xs rounded-full
+                                {% if tache.priorite == 'basse' %}bg-gray-100 text-gray-800
+                                {% elif tache.priorite == 'moyenne' %}bg-blue-100 text-blue-800
+                                {% elif tache.priorite == 'haute' %}bg-orange-100 text-orange-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ tache.get_priorite_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-4 text-sm">
+                        {% if tache.assignee %}
+                        <div class="flex items-center">
+                            <span class="font-medium mr-1">Assigné à:</span>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 bg-brand-blue rounded-full flex items-center justify-center text-white text-xs font-bold mr-1">
+                                    {{ tache.assignee.username|slice:":1"|upper }}
+                                </div>
+                                {{ tache.assignee.username }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if tache.date_echeance %}
+                        <div>
+                            <span class="font-medium">Échéance:</span> 
+                            {{ tache.date_echeance|date:"d/m/Y" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3 flex justify-end gap-2">
+                        <a href="{% url 'task_detail' tache.id %}" class="text-sm text-brand-blue hover:text-brand-blue-darker">
+                            Voir détails
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-8">
+                    <p class="text-secondary-text">Aucune tâche dans les projets auxquels vous participez pour le moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fonction de recherche et de filtrage des tâches
+    function filterTasks() {
+        const searchText = document.getElementById('searchTasks').value.toLowerCase();
+        const statusFilter = document.getElementById('filterStatus').value;
+        const priorityFilter = document.getElementById('filterPriority').value;
+        
+        const taskCards = document.querySelectorAll('.task-card');
+        
+        taskCards.forEach(card => {
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const description = card.querySelector('p').textContent.toLowerCase();
+            const statusClass = card.querySelector('span:nth-child(1)').classList;
+            const priorityClass = card.querySelector('span:nth-child(2)').classList;
+            
+            const matchesSearch = title.includes(searchText) || description.includes(searchText);
+            
+            const matchesStatus = statusFilter === 'all' || 
+                (statusFilter === 'a_faire' && statusClass.contains('bg-gray-100')) ||
+                (statusFilter === 'en_cours' && statusClass.contains('bg-blue-100')) ||
+                (statusFilter === 'terminee' && statusClass.contains('bg-green-100')) ||
+                (statusFilter === 'en_retard' && statusClass.contains('bg-red-100'));
+                
+            const matchesPriority = priorityFilter === 'all' || 
+                (priorityFilter === 'basse' && priorityClass.contains('bg-gray-100')) ||
+                (priorityFilter === 'moyenne' && priorityClass.contains('bg-blue-100')) ||
+                (priorityFilter === 'haute' && priorityClass.contains('bg-orange-100')) ||
+                (priorityFilter === 'critique' && priorityClass.contains('bg-red-100'));
+            
+            if (matchesSearch && matchesStatus && matchesPriority) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Ajouter les écouteurs d'événements
+    document.getElementById('searchTasks').addEventListener('input', filterTasks);
+    document.getElementById('filterStatus').addEventListener('change', filterTasks);
+    document.getElementById('filterPriority').addEventListener('change', filterTasks);
+</script>
+{% endblock %}

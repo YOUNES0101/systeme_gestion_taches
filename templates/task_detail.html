@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ tache.titre }} | OrgaPro{% endblock %}
+
+{% block content %}
+<div class="bg-off-white-bg py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Fil d'Ariane -->
+        <div class="mb-6">
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{% url 'task_list' %}" class="text-secondary-text hover:text-brand-blue">
+                            Tâches
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                            </svg>
+                            <a href="{% url 'project_detail' tache.projet.id %}" class="text-secondary-text hover:text-brand-blue ml-1 md:ml-2">
+                                {{ tache.projet.nom }}
+                            </a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                            </svg>
+                            <span class="text-neutral-text ml-1 md:ml-2">{{ tache.titre }}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- En-tête de la tâche -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <h1 class="text-2xl font-bold text-neutral-text">{{ tache.titre }}</h1>
+                        <span class="ml-3 px-3 py-1 text-sm rounded-full 
+                            {% if tache.statut == 'a_faire' %}bg-gray-100 text-gray-800
+                            {% elif tache.statut == 'en_cours' %}bg-blue-100 text-blue-800
+                            {% elif tache.statut == 'terminee' %}bg-green-100 text-green-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ tache.get_statut_display }}
+                        </span>
+                        <span class="ml-2 px-3 py-1 text-sm rounded-full 
+                            {% if tache.priorite == 'basse' %}bg-gray-100 text-gray-800
+                            {% elif tache.priorite == 'moyenne' %}bg-blue-100 text-blue-800
+                            {% elif tache.priorite == 'haute' %}bg-orange-100 text-orange-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            Priorité: {{ tache.get_priorite_display }}
+                        </span>
+                    </div>
+                    <p class="text-secondary-text mb-4">{{ tache.description }}</p>
+                    <div class="flex flex-wrap gap-4 text-sm text-secondary-text">
+                        <div>
+                            <span class="font-medium">Projet:</span> 
+                            <a href="{% url 'project_detail' tache.projet.id %}" class="text-brand-blue hover:underline">{{ tache.projet.nom }}</a>
+                        </div>
+                        <div>
+                            <span class="font-medium">Créée le:</span> 
+                            {{ tache.date_creation|date:"d/m/Y H:i" }}
+                        </div>
+                        {% if tache.date_echeance %}
+                        <div>
+                            <span class="font-medium">Échéance:</span> 
+                            {{ tache.date_echeance|date:"d/m/Y" }}
+                        </div>
+                        {% endif %}
+                        {% if tache.assignee %}
+                        <div class="flex items-center">
+                            <span class="font-medium mr-1">Assignée à:</span>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 bg-brand-blue rounded-full flex items-center justify-center text-white text-xs font-bold mr-1">
+                                    {{ tache.assignee.username|slice:":1"|upper }}
+                                </div>
+                                {{ tache.assignee.username }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+                    <a href="{% url 'edit_task' tache.id %}" class="btn-primary">
+                        Modifier
+                    </a>
+                    <form method="post" action="{% url 'update_task_status' tache.id %}" class="inline">
+                        {% csrf_token %}
+                        {% if tache.statut == 'a_faire' %}
+                            <input type="hidden" name="statut" value="en_cours">
+                            <button type="submit" class="btn-secondary">
+                                Démarrer
+                            </button>
+                        {% elif tache.statut == 'en_cours' %}
+                            <input type="hidden" name="statut" value="terminee">
+                            <button type="submit" class="btn-secondary">
+                                Terminer
+                            </button>
+                        {% elif tache.statut == 'terminee' %}
+                            <input type="hidden" name="statut" value="a_faire">
+                            <button type="submit" class="btn-secondary">
+                                Réouvrir
+                            </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Informations complémentaires -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="text-xl font-bold text-neutral-text mb-4">Informations</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-medium text-neutral-text">Temps</h3>
+                            <div class="mt-2 space-y-2">
+                                {% if tache.temps_estime %}
+                                <div class="flex justify-between">
+                                    <span class="text-secondary-text">Temps estimé:</span>
+                                    <span class="font-medium">{{ tache.temps_estime }} heures</span>
+                                </div>
+                                {% endif %}
+                                {% if tache.temps_passe %}
+                                <div class="flex justify-between">
+                                    <span class="text-secondary-text">Temps passé:</span>
+                                    <span class="font-medium">{{ tache.temps_passe }} heures</span>
+                                </div>
+                                {% endif %}
+                                {% if tache.temps_estime and tache.temps_passe %}
+                                <div class="flex justify-between">
+                                    <span class="text-secondary-text">Différence:</span>
+                                    <span class="font-medium {% if tache.temps_passe > tache.temps_estime %}text-red-500{% else %}text-green-500{% endif %}">
+                                        {{ tache.get_temps_difference }} heures
+                                        {% if tache.temps_passe > tache.temps_estime %}(dépassé){% else %}(restant){% endif %}
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium text-neutral-text">Dates</h3>
+                            <div class="mt-2 space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-secondary-text">Créée le:</span>
+                                    <span class="font-medium">{{ tache.date_creation|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-secondary-text">Dernière modification:</span>
+                                    <span class="font-medium">{{ tache.date_modification|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                {% if tache.date_echeance %}
+                                <div class="flex justify-between">
+                                    <span class="text-secondary-text">Échéance:</span>
+                                    <span class="font-medium">{{ tache.date_echeance|date:"d/m/Y" }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-medium text-neutral-text">Projet</h3>
+                            <div class="mt-2">
+                                <a href="{% url 'project_detail' tache.projet.id %}" class="text-brand-blue hover:underline">{{ tache.projet.nom }}</a>
+                                <p class="text-sm text-secondary-text mt-1">{{ tache.projet.description|truncatechars:100 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commentaires -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-bold text-neutral-text mb-4">Commentaires</h2>
+                    
+                    <!-- Formulaire d'ajout de commentaire -->
+                    <div class="mb-6">
+                        <form method="post" action="{% url 'add_comment' tache.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <textarea name="contenu" rows="3" class="w-full border border-gray-300 rounded-md p-2 text-sm" placeholder="Ajouter un commentaire..."></textarea>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary">
+                                    Commenter
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Liste des commentaires -->
+                    <div class="space-y-4">
+                        {% for commentaire in commentaires %}
+                        <div class="border-b border-gray-200 pb-4 {% if not forloop.last %}mb-4{% endif %}">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-brand-blue rounded-full flex items-center justify-center text-white text-xs font-bold mr-3">
+                                    {{ commentaire.auteur.username|slice:":1"|upper }}
+                                </div>
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-medium">{{ commentaire.auteur.username }}</span>
+                                        <span class="text-xs text-secondary-text">{{ commentaire.date_creation|date:"d/m/Y H:i" }}</span>
+                                    </div>
+                                    <p class="text-neutral-text whitespace-pre-line">{{ commentaire.contenu }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-8">
+                            <p class="text-secondary-text">Aucun commentaire pour le moment.</p>
+                            <p class="text-sm text-secondary-text mt-2">Soyez le premier à commenter cette tâche.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
