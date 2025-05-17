@@ -12,14 +12,14 @@
                 <div>
                     <div class="flex items-center mb-2">
                         <h1 class="text-2xl font-bold text-neutral-text">{{ projet.nom }}</h1>
-                        <span class="ml-3 px-3 py-1 text-sm rounded-full 
+                        <span class="ml-3 px-3 py-1 text-sm rounded-full
                             {% if projet.statut == 'en_attente' %}bg-yellow-100 text-yellow-800
                             {% elif projet.statut == 'en_cours' %}bg-blue-100 text-blue-800
                             {% elif projet.statut == 'termine' %}bg-green-100 text-green-800
                             {% else %}bg-red-100 text-red-800{% endif %}">
                             {{ projet.get_statut_display }}
                         </span>
-                        <span class="ml-2 px-3 py-1 text-sm rounded-full 
+                        <span class="ml-2 px-3 py-1 text-sm rounded-full
                             {% if projet.priorite == 'basse' %}bg-gray-100 text-gray-800
                             {% elif projet.priorite == 'moyenne' %}bg-blue-100 text-blue-800
                             {% elif projet.priorite == 'haute' %}bg-orange-100 text-orange-800
@@ -30,17 +30,17 @@
                     <p class="text-secondary-text mb-4">{{ projet.description }}</p>
                     <div class="flex flex-wrap gap-4 text-sm text-secondary-text">
                         <div>
-                            <span class="font-medium">Date de début:</span> 
+                            <span class="font-medium">Date de début:</span>
                             {{ projet.date_debut|date:"d/m/Y" }}
                         </div>
                         {% if projet.date_fin %}
                         <div>
-                            <span class="font-medium">Date de fin:</span> 
+                            <span class="font-medium">Date de fin:</span>
                             {{ projet.date_fin|date:"d/m/Y" }}
                         </div>
                         {% endif %}
                         <div>
-                            <span class="font-medium">Chef de projet:</span> 
+                            <span class="font-medium">Chef de projet:</span>
                             {{ projet.chef_de_projet.username }}
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                                 <p class="text-sm text-secondary-text">Chef de projet</p>
                             </div>
                         </div>
-                        
+
                         <!-- Membres -->
                         {% for membre in projet.membres.all %}
                         <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg">
@@ -182,13 +182,13 @@
                                 {% endif %}
                                 {% if tache.date_echeance %}
                                 <div>
-                                    <span class="font-medium">Échéance:</span> 
+                                    <span class="font-medium">Échéance:</span>
                                     {{ tache.date_echeance|date:"d/m/Y" }}
                                 </div>
                                 {% endif %}
                                 {% if tache.temps_estime %}
                                 <div>
-                                    <span class="font-medium">Temps estimé:</span> 
+                                    <span class="font-medium">Temps estimé:</span>
                                     {{ tache.temps_estime }}h
                                 </div>
                                 {% endif %}
@@ -221,7 +221,7 @@
 <div id="taskModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl mx-4">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-neutral-text">Ajouter une nouvelle tâche</h2>
+            <h2 class="text-xl font-bold text-neutral-text w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-blue hover:bg-brand-blue-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue transition-colors duration-150">Ajouter une nouvelle tâche</h2>
             <button id="closeModal" class="text-gray-500 hover:text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -233,17 +233,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div class="md:col-span-2">
                     <label for="titre" class="block text-sm font-medium text-secondary-text mb-1">Titre</label>
-                    <input type="text" id="titre" name="titre" required 
+                    <input type="text" id="titre" name="titre" required
                            class="w-full border border-gray-300 rounded-md p-2">
                 </div>
                 <div class="md:col-span-2">
                     <label for="description" class="block text-sm font-medium text-secondary-text mb-1">Description</label>
-                    <textarea id="description" name="description" rows="3" 
+                    <textarea id="description" name="description" rows="3"
                               class="w-full border border-gray-300 rounded-md p-2"></textarea>
                 </div>
                 <div>
                     <label for="priorite" class="block text-sm font-medium text-secondary-text mb-1">Priorité</label>
-                    <select id="priorite" name="priorite" 
+                    <select id="priorite" name="priorite"
                             class="w-full border border-gray-300 rounded-md p-2">
                         <option value="basse">Basse</option>
                         <option value="moyenne" selected>Moyenne</option>
@@ -253,7 +253,7 @@
                 </div>
                 <div>
                     <label for="statut" class="block text-sm font-medium text-secondary-text mb-1">Statut</label>
-                    <select id="statut" name="statut" 
+                    <select id="statut" name="statut"
                             class="w-full border border-gray-300 rounded-md p-2">
                         <option value="a_faire" selected>À faire</option>
                         <option value="en_cours">En cours</option>
@@ -263,7 +263,7 @@
                 </div>
                 <div>
                     <label for="assignee" class="block text-sm font-medium text-secondary-text mb-1">Assigné à</label>
-                    <select id="assignee" name="assignee" 
+                    <select id="assignee" name="assignee"
                             class="w-full border border-gray-300 rounded-md p-2">
                         <option value="">Non assigné</option>
                         <option value="{{ projet.chef_de_projet.id }}">{{ projet.chef_de_projet.username }} (Chef)</option>
@@ -274,12 +274,12 @@
                 </div>
                 <div>
                     <label for="date_echeance" class="block text-sm font-medium text-secondary-text mb-1">Date d'échéance</label>
-                    <input type="date" id="date_echeance" name="date_echeance" 
+                    <input type="date" id="date_echeance" name="date_echeance"
                            class="w-full border border-gray-300 rounded-md p-2">
                 </div>
                 <div>
                     <label for="temps_estime" class="block text-sm font-medium text-secondary-text mb-1">Temps estimé (heures)</label>
-                    <input type="number" id="temps_estime" name="temps_estime" min="0" 
+                    <input type="number" id="temps_estime" name="temps_estime" min="0"
                            class="w-full border border-gray-300 rounded-md p-2">
                 </div>
             </div>
@@ -332,13 +332,13 @@
         taskCards.forEach(card => {
             const statusElement = card.querySelector('[class*="bg-"][class*="text-"]');
             const priorityElement = card.querySelectorAll('[class*="bg-"][class*="text-"]')[1];
-            
+
             const statusText = statusElement.textContent.trim().toLowerCase();
             const priorityText = priorityElement.textContent.trim().toLowerCase();
-            
+
             const statusMatch = statusValue === 'all' || statusText.includes(statusValue);
             const priorityMatch = priorityValue === 'all' || priorityText.includes(priorityValue);
-            
+
             if (statusMatch && priorityMatch) {
                 card.style.display = 'block';
             } else {
